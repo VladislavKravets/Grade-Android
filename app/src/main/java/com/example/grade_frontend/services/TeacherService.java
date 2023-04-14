@@ -6,7 +6,7 @@ import static com.example.grade_frontend.contsants.Constants.BASE_URL;
 import androidx.annotation.NonNull;
 
 import com.example.grade_frontend.pojo.Student;
-import com.example.grade_frontend.pojo.StudentGroup;
+import com.example.grade_frontend.pojo.StudentIncompleteGroup;
 import com.example.grade_frontend.pojo.StudentGroupInfo;
 import com.example.grade_frontend.pojo.Teacher;
 import com.example.grade_frontend.services.authorization.TeacherServiceAuthorizationCallback;
@@ -74,8 +74,8 @@ public class TeacherService {
                 if (response.isSuccessful()) {
                     String responseBody = response.body().string();
                     Gson gson = new Gson();
-                    Type listType = new TypeToken<List<StudentGroup>>() {}.getType();
-                    List<StudentGroup> studentGroupList = gson.fromJson(responseBody, listType);
+                    Type listType = new TypeToken<List<StudentIncompleteGroup>>() {}.getType();
+                    List<StudentIncompleteGroup> studentGroupList = gson.fromJson(responseBody, listType);
 
                     callback.onTeacherInfoForGroups(studentGroupList);
                 } else {

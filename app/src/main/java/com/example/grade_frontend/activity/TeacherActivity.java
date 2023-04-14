@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.example.grade_frontend.R;
 import com.example.grade_frontend.activity.teacherActivityComponent.StudentAdapter;
 import com.example.grade_frontend.pojo.Student;
-import com.example.grade_frontend.pojo.StudentGroup;
+import com.example.grade_frontend.pojo.StudentIncompleteGroup;
 import com.example.grade_frontend.pojo.StudentGroupInfo;
 import com.example.grade_frontend.services.TeacherService;
 import com.example.grade_frontend.services.teacher.TeacherServiceCallback;
@@ -63,9 +63,9 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
     }
 
     @Override
-    public void onTeacherInfoForGroups(List<StudentGroup> studentGroupList) {
+    public void onTeacherInfoForGroups(List<StudentIncompleteGroup> studentGroupList) {
         runOnUiThread(() -> {
-            for (StudentGroup studentGroup : studentGroupList) {
+            for (StudentIncompleteGroup studentGroup : studentGroupList) {
                 RadioButton radioButton = new RadioButton(TeacherActivity.this);
                 radioButton.setText(studentGroup.getName());
                 radioButton.setId(studentGroup.getId());

@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentGroup {
+public class StudentIncompleteGroup {
     @SerializedName("id")
     @Expose
     private Integer id;
