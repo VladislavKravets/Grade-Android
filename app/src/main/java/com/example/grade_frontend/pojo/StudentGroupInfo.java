@@ -17,7 +17,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class StudentGroupInfo {
     @SerializedName("name")
     @Expose
@@ -76,6 +75,6 @@ public class StudentGroupInfo {
                 "Назва Факультету: '" + specializationFacultyName + '\n' +
                 "Назва спеціальності: '" + specializationSpecialityName + '\n' +
                 "Куратор: " + specializationProgramHeadName
-                + specializationProgramHeadPatronimic +  specializationProgramHeadSurname;
+                + " " + specializationProgramHeadPatronimic + " " +  specializationProgramHeadSurname;
     }
 }

@@ -3,7 +3,18 @@ package com.example.grade_frontend.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Student {
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Student implements Serializable {
     @SerializedName("name")
     @Expose
     private String name;
@@ -16,19 +27,6 @@ public class Student {
     @SerializedName("email")
     @Expose
     private String email;
-
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPatronimic() {
-        return patronimic;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
 
     @Override
     public String toString() {

@@ -1,6 +1,7 @@
 package com.example.grade_frontend.activity.teacherActivityComponent;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.grade_frontend.R;
+import com.example.grade_frontend.activity.StudentInformation;
+import com.example.grade_frontend.activity.TeacherActivity;
 import com.example.grade_frontend.pojo.Student;
 
 import java.util.List;
@@ -48,18 +51,16 @@ public class StudentAdapter extends ArrayAdapter<Student> {
         surnameTextView.setText(student.getSurname());
 
         // Обрабатываем нажатия на кнопки "Посмотреть оценки" и "Пропуски"
-        scoresButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
+        scoresButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), StudentInformation.class);
+            intent.putExtra("student", student);
+            getContext().startActivity(intent);
         });
 
-        absencesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: обработать нажатие на кнопку "Пропуски"
-            }
+        absencesButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), StudentInformation.class);
+            intent.putExtra("student", student);
+            getContext().startActivity(intent);
         });
 
         return convertView;

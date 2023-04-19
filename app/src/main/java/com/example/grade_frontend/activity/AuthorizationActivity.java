@@ -3,14 +3,15 @@ package com.example.grade_frontend.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.grade_frontend.R;
 import com.example.grade_frontend.pojo.Teacher;
-import com.example.grade_frontend.services.TeacherService;
-import com.example.grade_frontend.services.authorization.TeacherServiceAuthorizationCallback;
+import com.example.grade_frontend.services.authorization.AuthorizationService;
+import com.example.grade_frontend.services.authorization.AuthorizationServiceCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -19,17 +20,16 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class AuthorizationActivity extends AppCompatActivity implements TeacherServiceAuthorizationCallback {
+public class AuthorizationActivity extends AppCompatActivity implements AuthorizationServiceCallback {
 
     private static final int RC_SIGN_IN = 9001;
 
     private GoogleSignInClient mGoogleSignInClient;
 
     private FirebaseAuth mAuth;
-
-    private TeacherService teacherService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,10 +72,9 @@ public class AuthorizationActivity extends AppCompatActivity implements TeacherS
                 mAuth.signInWithCredential(credential)
                         .addOnCompleteListener(this, task1 -> {
                             if (task1.isSuccessful()) {
-                                // Инициализация объекта TeacherService
-                                teacherService = new TeacherService();
-                                // Вызов метода getTeacherInfoByEmail
-                                teacherService.getTeacherInfoByEmail(account.getEmail(), this);
+                                // Инициализация объекта TeacherAuthorization
+                                AuthorizationService authorizationService = new AuthorizationService();
+                                authorizationService.verifyTeacherOrStudent(account.getEmail(), this);
                             } else {
                                 // Обработка ошибок при аутентификации
                                 Toast.makeText(AuthorizationActivity.this, "Authentication failed.",
@@ -92,11 +91,37 @@ public class AuthorizationActivity extends AppCompatActivity implements TeacherS
     }
 
     @Override
-    public void onTeacherInfoReceived(Teacher teacherPojo) {
-        if (teacherPojo != null) {
-            Intent intent = new Intent(this, TeacherActivity.class);
-            startActivity(intent);
-            finish();
+    public void verifyOnTeacherOrStudent(String nameEntity) {
+        FirebaseUser user = mAuth.getCurrentUser();
+
+        // Сохранение данных пользователя в SharedPreferences
+        SharedPreferences.Editor editor = getSharedPreferences("UserData", MODE_PRIVATE).edit();
+        editor.putString("userId", user.getUid());
+        editor.putString("email", user.getEmail());
+
+        switch (nameEntity) {
+            case "teacher": {
+                editor.putString("role", "teacher");// или "student"
+                editor.apply();
+
+                Intent intent = new Intent(this, TeacherActivity.class);
+                startActivity(intent);
+                finish();
+            }break;
+
+            case "student": {
+                editor.putString("role", "student");
+                editor.apply();
+
+                Intent intent = new Intent(this, StudentActivity.class);
+                startActivity(intent);
+                finish();
+            }break;
+
+            default: {
+                Toast.makeText(AuthorizationActivity.this,
+                        "Error", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

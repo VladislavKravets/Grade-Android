@@ -10,5 +10,4 @@ public interface TeacherServiceCallback {
     void onTeacherInfoForGroups(List<StudentIncompleteGroup> studentGroupList);
     void onGroupInfoForId(StudentGroupInfo studentGroupInfo);
     void onStudentsGroupList(List<Student> studentList);
-
 }
