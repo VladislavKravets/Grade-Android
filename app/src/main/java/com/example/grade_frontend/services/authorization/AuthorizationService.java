@@ -29,10 +29,6 @@ public class AuthorizationService {
 
                 // обработка без успешного получения запроса
                 switch (nameQueries) {
-//                    case TEACHER: {
-//                        callback.onTeacherInfoReceived(null);
-//                    }break;
-
                     case TEACHER_OR_STUDENT: {
                         callback.verifyOnTeacherOrStudent("");
                     }break;
@@ -48,11 +44,6 @@ public class AuthorizationService {
 
                     // обработка успешного получения запроса
                     switch (nameQueries) {
-//                        case TEACHER: {
-//                            Teacher teacherPojo = gson.fromJson(responseBody, Teacher.class);
-//                            callback.onTeacherInfoReceived(teacherPojo);
-//                        } break;
-
                         case TEACHER_OR_STUDENT: {
                             callback.verifyOnTeacherOrStudent(responseBody);
                         }break;
@@ -65,12 +56,6 @@ public class AuthorizationService {
             }
         });
     }
-
-    /* */
-//    public void getTeacherInfoByEmail(String email, AuthorizationServiceCallback callback) {
-//        String url = BASE_URL + API_TEACHER + "getTeacherInfoByEmail?email=" + email;
-//        makeRequest(url, callback, GetNameQueries.TEACHER);
-//    }
 
     /* */
     public void verifyTeacherOrStudent(String email, AuthorizationServiceCallback callback) {

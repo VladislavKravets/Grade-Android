@@ -5,13 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.grade_frontend.R;
+import com.example.grade_frontend.activity.teacherActivityComponent.GroupSpinnerAdapter;
 import com.example.grade_frontend.activity.teacherActivityComponent.StudentAdapter;
 import com.example.grade_frontend.pojo.Student;
 import com.example.grade_frontend.pojo.StudentIncompleteGroup;
@@ -27,7 +30,7 @@ import java.util.List;
 
 public class TeacherActivity extends AppCompatActivity implements TeacherServiceCallback {
     private ListView listView; // лист студентов
-    private RadioGroup radioGroup; // Групируем групы преподавателя
+    private Spinner spinner; // Групируем групы преподавателя
     private TextView groupInfoTextView; // Вывод информации по групе
 
     @Override
@@ -45,7 +48,7 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
         TextView displayTextView = findViewById(R.id.textView2);
         displayTextView.setText(mAuth.getCurrentUser().getDisplayName()); // выводим ФИО преподавателя как записано в google
 
-        radioGroup = findViewById(R.id.list_group_chek);
+        spinner = findViewById(R.id.list_group_chek);
         groupInfoTextView = findViewById(R.id.group_info_text_view);
 
         listView = findViewById(R.id.listview);
@@ -65,16 +68,17 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
             finish();
         });
 
-        // listener radio button
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            // Обработка выбора
-            RadioButton radioButton = group.findViewById(checkedId);
-
-            if (radioButton != null) {
-                int groupId = radioButton.getId();
-                teacherService.getGroupInfo(groupId, this); // инфу по групе с бекенда
-                teacherService.getStudentsInGroup(groupId, this); // инфу по все студентам
+        // listener spinner
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                StudentIncompleteGroup studentIncompleteGroup = (StudentIncompleteGroup) parent.getItemAtPosition(position);
+                teacherService.getGroupInfo(studentIncompleteGroup.getId(), TeacherActivity.this); // инфу по групе с бекенда
+                teacherService.getStudentsInGroup(studentIncompleteGroup.getId(), TeacherActivity.this); // инфу по все студентам
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
     }
 
@@ -88,12 +92,10 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
     @Override
     public void onTeacherInfoForGroups(List<StudentIncompleteGroup> studentGroupList) {
         runOnUiThread(() -> {
-            for (StudentIncompleteGroup studentGroup : studentGroupList) {
-                RadioButton radioButton = new RadioButton(TeacherActivity.this);
-                radioButton.setText(studentGroup.getName());
-                radioButton.setId(studentGroup.getId());
-                radioGroup.addView(radioButton);
-            }
+            GroupSpinnerAdapter groupSpinnerAdapter = new GroupSpinnerAdapter(this,
+                    studentGroupList);
+            groupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(groupSpinnerAdapter);
         });
     }
 

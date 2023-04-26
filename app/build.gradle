@@ -54,6 +54,10 @@ dependencies {
     // Yahoo Sign-In
     implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
 
+    // Material Design ( оповещение об ошибках снизу екрана )
+    implementation 'com.google.android.material:material:1.3.0'
+
+
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

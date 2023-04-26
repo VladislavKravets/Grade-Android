@@ -25,41 +25,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logout_btn" />
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="wrap_content"
-        android:layout_height="400px"
+    <Spinner
+        android:id="@+id/list_group_chek"
+        android:layout_width="173dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <RadioGroup
-                android:id="@+id/list_group_chek"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/group_info_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
+        app:layout_constraintTop_toBottomOf="@+id/list_group_chek" />
 
     <ListView
         android:id="@+id/listview"
         android:layout_width="wrap_content"
-        android:layout_height="450dp"
+        android:layout_height="550dp"
         android:divider="@null"
         android:dividerHeight="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
