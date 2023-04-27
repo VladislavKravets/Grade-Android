@@ -84,15 +84,16 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
                                 authorizationService.verifyTeacherOrStudent(account.getEmail(), this);
                             } else {
                                 // Обработка ошибок при аутентификации
-                                Toast.makeText(AuthorizationActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+                                Snackbar.make(findViewById(android.R.id.content).getRootView(),
+                                        "Authentication failed.",
+                                        Snackbar.LENGTH_LONG).show();
                             }
                         });
             } catch (ApiException e) {
                 // Обработка ошибок при выборе учетной записи Google
-                Toast.makeText(AuthorizationActivity.this,
+                Snackbar.make(findViewById(android.R.id.content).getRootView(),
                         "Google sign in failed.",
-                        Toast.LENGTH_SHORT).show();
+                        Snackbar.LENGTH_LONG).show();
             }
         }
     }

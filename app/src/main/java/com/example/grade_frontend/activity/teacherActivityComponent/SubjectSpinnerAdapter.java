@@ -7,36 +7,33 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import com.example.grade_frontend.pojo.CourseForGroup;
 
-import com.example.grade_frontend.pojo.StudentIncompleteGroup;
-
-import java.util.ArrayList;
 import java.util.List;
 
-public class GroupSpinnerAdapter extends ArrayAdapter<StudentIncompleteGroup> {
+public class SubjectSpinnerAdapter extends ArrayAdapter<CourseForGroup> {
 
-  public GroupSpinnerAdapter(Context context, List<StudentIncompleteGroup> items) {
+  public SubjectSpinnerAdapter(Context context, List<CourseForGroup> items) {
     super(context, 0, items);
   }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    StudentIncompleteGroup item = getItem(position);
+    CourseForGroup item = getItem(position);
 
     if (convertView == null) {
       convertView = LayoutInflater.from(getContext()).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false);
     }
 
     TextView textView = convertView.findViewById(android.R.id.text1);
-    textView.setText(item.getName());
+    textView.setText(item.getCourseCourseName());
 
     return convertView;
   }
 
   @Override
   public View getDropDownView(int position, View convertView, ViewGroup parent) {
-    StudentIncompleteGroup item = getItem(position);
+    CourseForGroup item = getItem(position);
 
     if (convertView == null) {
       convertView = LayoutInflater.from(
@@ -48,7 +45,7 @@ public class GroupSpinnerAdapter extends ArrayAdapter<StudentIncompleteGroup> {
     }
 
     TextView textView = convertView.findViewById(android.R.id.text1);
-    textView.setText(item.getName());
+    textView.setText(item.getCourseCourseName());
 
     return convertView;
   }

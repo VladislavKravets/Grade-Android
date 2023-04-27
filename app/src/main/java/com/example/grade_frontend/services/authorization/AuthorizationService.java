@@ -40,7 +40,7 @@ public class AuthorizationService {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String responseBody = response.body().string();
-                    Gson gson = new Gson();
+                    //Gson gson = new Gson();
 
                     // обработка успешного получения запроса
                     switch (nameQueries) {

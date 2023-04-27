@@ -5,9 +5,11 @@ import static com.example.grade_frontend.contsants.Constants.BASE_URL;
 
 import androidx.annotation.NonNull;
 
+import com.example.grade_frontend.pojo.CourseForGroup;
 import com.example.grade_frontend.pojo.Student;
 import com.example.grade_frontend.pojo.StudentGroupInfo;
-import com.example.grade_frontend.pojo.StudentIncompleteGroup;
+
+import com.example.grade_frontend.pojo.StudentGroupSmall;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,12 +39,20 @@ public class TeacherService {
             callback.onStudentsGroupList(null);
             break;
 
-          case STUDENT_INCOMPLETE_GROUP_LIST:
-            callback.onTeacherInfoForGroups(null);
-            break;
+//          case STUDENT_INCOMPLETE_GROUP_LIST:
+//            callback.onTeacherInfoForGroups(null);
+//            break;
 
           case STUDENT_GROUP_INFO:
             callback.onGroupInfoForId(null);
+            break;
+
+          case GET_SUBJECTS_FOR_SEMESTER:
+            callback.onCourseByTeacherEmail(null);
+            break;
+
+          case GET_GROUPS_FOR_SEMESTER:
+            callback.onGroupsByTeacherEmail(null);
             break;
         }
       }
@@ -66,19 +76,34 @@ public class TeacherService {
             }
             break;
 
-            case STUDENT_INCOMPLETE_GROUP_LIST: {
-              Type type = new TypeToken<List<StudentIncompleteGroup>>() {
-              }.getType();
-              Object object = gson.fromJson(responseBody, type);
-              callback.onTeacherInfoForGroups((List<StudentIncompleteGroup>) object);
-            }
-            break;
+//            case STUDENT_INCOMPLETE_GROUP_LIST: {
+//              Type type = new TypeToken<List<CourseForGroups>>() {
+//              }.getType();
+//              Object object = gson.fromJson(responseBody, type);
+//              callback.onTeacherInfoForGroups((List<CourseForGroups>) object);
+//            }
+//            break;
 
             case STUDENT_GROUP_INFO: {
               StudentGroupInfo studentGroupInfo = gson.fromJson(responseBody, StudentGroupInfo.class);
               callback.onGroupInfoForId(studentGroupInfo);
             }
             break;
+
+            case GET_SUBJECTS_FOR_SEMESTER: {
+              Type type = new TypeToken<List<CourseForGroup>>() {
+              }.getType();
+              Object object = gson.fromJson(responseBody, type);
+              callback.onCourseByTeacherEmail((List<CourseForGroup>) object);
+            } break;
+
+            case GET_GROUPS_FOR_SEMESTER: {
+              Type type = new TypeToken<List<StudentGroupSmall>>() {
+              }.getType();
+              Object object = gson.fromJson(responseBody, type);
+              callback.onGroupsByTeacherEmail((List<StudentGroupSmall>) object);
+            } break;
+
 
           }
 
@@ -89,10 +114,10 @@ public class TeacherService {
     });
   }
 
-  public void getGroupByTeacherEmail(String email, TeacherServiceCallback callback) {
-    String url = BASE_URL + API_TEACHER + "getGroupByTeacherEmail?email=" + email;
-    makeRequest(url, callback, GetNameQueries.STUDENT_INCOMPLETE_GROUP_LIST);
-  }
+//  public void getGroupByTeacherEmail(String email, TeacherServiceCallback callback) {
+//    String url = BASE_URL + API_TEACHER + "getGroupByTeacherEmail?email=" + email;
+//    makeRequest(url, callback, GetNameQueries.STUDENT_INCOMPLETE_GROUP_LIST);
+//  }
 
   public void getGroupInfo(int id, TeacherServiceCallback callback) {
     String url = BASE_URL + API_TEACHER + "getGroupInfo?id=" + id;
@@ -102,5 +127,20 @@ public class TeacherService {
   public void getStudentsInGroup(int id, TeacherServiceCallback callback) {
     String url = BASE_URL + API_TEACHER + "getStudentsByStudentGroupId?id=" + id;
     makeRequest(url, callback, GetNameQueries.STUDENT_GROUP_LIST);
+  }
+
+  public void getCourseByTeacherEmail(String email, int semester, TeacherServiceCallback callback) {
+    String url = BASE_URL + API_TEACHER +
+            "getCourseByTeacherEmail?email=" + email + "&" + "semester=" + semester;
+    makeRequest(url, callback, GetNameQueries.GET_SUBJECTS_FOR_SEMESTER);
+  }
+
+  public void getGroupByEmailSemesterAndIdNameCourse(String email, int semester, int id, TeacherServiceCallback callback) {
+    String url = BASE_URL + API_TEACHER +
+            "getGroupByEmailSemesterAndIdNameCourse?"
+            + "email=" + email + "&"
+            + "semester=" + semester + "&"
+            + "id=" + id;
+    makeRequest(url, callback, GetNameQueries.GET_GROUPS_FOR_SEMESTER);
   }
 }
