@@ -31,16 +31,14 @@ import java.util.List;
 
 
 public class TeacherActivity extends AppCompatActivity implements TeacherServiceCallback {
-    // получаем авторизованый клас с нашим юзвером
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance(); // получаем авторизованый клас с нашим юзвером
     private ListView listView; // лист студентов
     private Spinner listGroupSpinner; // Групируем групы преподавателя
     private Spinner semesterSpinner; // Семестр
     private Spinner subjectSpinner; // Предмет
     private TextView groupInfoTextView; // Вывод информации по групе
-
     private int semester; // глобально инициализируем семестр
+    private String courseName; // глобально предмет для передачи в адаптер (listView student)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +122,7 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 CourseForGroup courseForGroup = (CourseForGroup) parent.getItemAtPosition(position);
+                courseName = courseForGroup.getCourseName();
                 teacherService.getGroupByEmailSemesterAndIdNameCourse(
                         mAuth.getCurrentUser().getEmail(),
                         semester,
@@ -166,7 +165,8 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
         runOnUiThread(() -> {
             ArrayAdapter<Student> adapter = new StudentAdapter(this,
                     R.layout.student_view,
-                    studentList);
+                    studentList,
+                    courseName);
 
             listView.setAdapter(adapter);
         });

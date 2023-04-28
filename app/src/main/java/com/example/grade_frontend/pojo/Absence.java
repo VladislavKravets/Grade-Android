@@ -4,6 +4,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +16,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CourseForGroup implements Serializable {
-  @SerializedName("courseCourseNameId")
-  @Expose
-  private int courseCourseNameId;
+public class Absence implements Serializable{
   @SerializedName("courseCourseNameName")
   @Expose
   private String courseName;
+  @SerializedName("data")
+  @Expose
+  private String date;
 }

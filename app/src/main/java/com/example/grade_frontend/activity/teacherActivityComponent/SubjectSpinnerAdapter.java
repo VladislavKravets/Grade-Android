@@ -26,7 +26,7 @@ public class SubjectSpinnerAdapter extends ArrayAdapter<CourseForGroup> {
     }
 
     TextView textView = convertView.findViewById(android.R.id.text1);
-    textView.setText(item.getCourseCourseName());
+    textView.setText(item.getCourseName());
 
     return convertView;
   }
@@ -45,7 +45,7 @@ public class SubjectSpinnerAdapter extends ArrayAdapter<CourseForGroup> {
     }
 
     TextView textView = convertView.findViewById(android.R.id.text1);
-    textView.setText(item.getCourseCourseName());
+    textView.setText(item.getCourseName());
 
     return convertView;
   }

@@ -20,11 +20,13 @@ import com.example.grade_frontend.pojo.Student;
 import java.util.List;
 
 public class StudentAdapter extends ArrayAdapter<Student> {
-    private int layoutResource;
+    private final int layoutResource;
+    private final String courseName; // предмет
 
-    public StudentAdapter(Context context, int resource, List<Student> students) {
+    public StudentAdapter(Context context, int resource, List<Student> students, String courseName) {
         super(context, resource, students);
         this.layoutResource = resource;
+        this.courseName = courseName;
     }
 
     @NonNull
@@ -54,12 +56,16 @@ public class StudentAdapter extends ArrayAdapter<Student> {
         scoresButton.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), StudentInformation.class);
             intent.putExtra("student", student);
+            intent.putExtra("status", Status.GET_GRADE);
+            intent.putExtra("courseName", courseName);
             getContext().startActivity(intent);
         });
 
         absencesButton.setOnClickListener(view -> {
             Intent intent = new Intent(getContext(), StudentInformation.class);
             intent.putExtra("student", student);
+            intent.putExtra("status", Status.GET_ABSENCE);
+            intent.putExtra("courseName", courseName);
             getContext().startActivity(intent);
         });
 
