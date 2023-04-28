@@ -1,4 +1,4 @@
-package com.example.grade_frontend.activity.StudentInformationComponent;
+package com.example.grade_frontend.activity.studentInformationComponent;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -62,8 +62,8 @@ public class ListAdapter extends ArrayAdapter<Object> {
       Absence absence = (Absence) getItem(position);
 
       if (absence != null) {
-        textViewCourseName.setText(absence.getCourseName());
-        textViewDate.setText(absence.getDate());
+        textViewCourseName.setText("Назва предмету: " + absence.getCourseName());
+        textViewDate.setText("Дата пропуску: " + absence.getDate());
       }
     } else if (viewType == TYPE_GRADE) {
       TextView textViewGrade = convertView.findViewById(R.id.textViewGrade);
@@ -73,9 +73,9 @@ public class ListAdapter extends ArrayAdapter<Object> {
       Grade grade = (Grade) getItem(position);
 
       if (grade != null) {
-        textViewGrade.setText(String.valueOf(grade.getGrade()));
-        textViewCourseName.setText(grade.getCourseName());
-        textViewCreatedAt.setText(grade.getCreatedAt());
+        textViewGrade.setText("Оцінка: " + grade.getGrade());
+        textViewCourseName.setText("Предмет: " + grade.getCourseName());
+        textViewCreatedAt.setText("Поставлена: " + grade.getCreatedAt());
       }
     }
 

@@ -30,20 +30,20 @@
         android:id="@+id/list_group_spinner"
         android:layout_width="173dp"
         android:layout_height="24dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subject_spiner" />
+        app:layout_constraintTop_toBottomOf="@+id/logout_btn" />
 
     <TextView
         android:id="@+id/group_info_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/list_group_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/subject_spiner" />
 
     <ListView
         android:id="@+id/listview"
@@ -67,9 +67,11 @@
         android:id="@+id/semestr_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logout_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/list_group_spinner" />
 
     <TextView
         android:id="@+id/textView"
@@ -85,20 +87,19 @@
         android:id="@+id/subject_spiner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/semestr_spinner" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         android:text="Предмет"
-        app:layout_constraintBottom_toTopOf="@+id/subject_spiner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/semestr_spinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

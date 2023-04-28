@@ -1,7 +1,5 @@
 package com.example.grade_frontend.services.authorization;
 
-import com.example.grade_frontend.pojo.Teacher;
-
-public interface AuthorizationServiceCallback {
+public interface AuthorizationActivityServiceCallback {
     void verifyOnTeacherOrStudent(String nameEntity);
 }

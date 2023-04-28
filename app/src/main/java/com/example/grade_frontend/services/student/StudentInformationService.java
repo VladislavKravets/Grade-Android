@@ -8,15 +8,11 @@ import androidx.annotation.NonNull;
 import com.example.grade_frontend.pojo.Absence;
 import com.example.grade_frontend.pojo.Grade;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -25,9 +21,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class StudentService {
+public class StudentInformationService {
   private final OkHttpClient client = new OkHttpClient();
-  private void makeRequest(String url, StudentServiceCallback callback, GetNameQueries nameQueries) {
+
+  private void makeRequest(String url, StudentInformationActivityServiceCallback callback,
+                           GetNameQueries nameQueries) {
     Request request = new Request.Builder().url(url).build();
 
     client.newCall(request).enqueue(new Callback() {
@@ -76,7 +74,6 @@ public class StudentService {
             break;
 
           }
-
         } else {
           onFailure(call, new IOException("Unsuccessful response"));
         }
@@ -84,16 +81,18 @@ public class StudentService {
     });
   }
 
-  public void getGradeByStudentEmailAndDate(String email, LocalDate startDate, LocalDate endDate, StudentServiceCallback callback) {
-    String url = BASE_URL + API_STUDENT + "getGradeByStudentId"
+  public void getGradeByStudentEmailAndDate(String email, LocalDate startDate, LocalDate endDate, StudentInformationActivityServiceCallback callback) {
+    String url = BASE_URL + API_STUDENT + "getGradesByStudentEmail"
             + "?email=" + email
             + "&startDate=" + startDate
             + "&endDate=" + endDate;
     makeRequest(url, callback, GetNameQueries.GRADE_FOR_STUDENT);
   }
 
-  public void getAbsenceByStudentEmailAndDate(String email, LocalDate startDate, LocalDate endDate, StudentServiceCallback callback) {
-    String url = BASE_URL + API_STUDENT + "getAbsenceByStudentId"
+  public void getAbsenceByStudentEmailAndDate(String email, LocalDate startDate,
+                                              LocalDate endDate,
+                                              StudentInformationActivityServiceCallback callback) {
+    String url = BASE_URL + API_STUDENT + "getAbsencesByStudentEmail"
             + "?email=" + email
             + "&startDate=" + startDate
             + "&endDate=" + endDate;

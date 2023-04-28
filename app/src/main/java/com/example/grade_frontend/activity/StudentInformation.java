@@ -12,12 +12,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.grade_frontend.R;
-import com.example.grade_frontend.activity.StudentInformationComponent.ListAdapter;
+import com.example.grade_frontend.activity.studentInformationComponent.ListAdapter;
 import com.example.grade_frontend.pojo.Absence;
 import com.example.grade_frontend.pojo.Grade;
 import com.example.grade_frontend.pojo.Student;
-import com.example.grade_frontend.services.student.StudentService;
-import com.example.grade_frontend.services.student.StudentServiceCallback;
+import com.example.grade_frontend.services.student.StudentInformationService;
+import com.example.grade_frontend.services.student.StudentInformationActivityServiceCallback;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StudentInformation extends AppCompatActivity implements StudentServiceCallback {
+public class StudentInformation extends AppCompatActivity implements StudentInformationActivityServiceCallback {
   private String course;
   private ListView listView;
 
@@ -39,11 +39,12 @@ public class StudentInformation extends AppCompatActivity implements StudentServ
     listView = findViewById(R.id.listView);
 
     //
-    StudentService studentService = new StudentService();
+    StudentInformationService studentService = new StudentInformationService();
 
     Student student = (Student) getIntent().getSerializableExtra("student");
     course = (String) getIntent().getSerializableExtra("courseName");
     Enum status = (Enum) getIntent().getSerializableExtra("status");
+    String groupName = (String) getIntent().getSerializableExtra("groupName");
 
     if (GET_GRADE.equals(status)) {
       studentService.getGradeByStudentEmailAndDate(student.getEmail(),
@@ -60,7 +61,8 @@ public class StudentInformation extends AppCompatActivity implements StudentServ
     }
 
     TextView textView = findViewById(R.id.student_text_view);
-    textView.setText(student.toString());
+    textView.setText("Студент: " + student.toString() + "\nГрупа: " +  groupName + "\n"
+                    + (status.equals(GET_GRADE) ? "Оцінки" : "Пропуски" + " студента"));
   }
 
   @RequiresApi(api = Build.VERSION_CODES.N)

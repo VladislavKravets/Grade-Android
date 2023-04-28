@@ -5,9 +5,6 @@ import static com.example.grade_frontend.contsants.Constants.BASE_URL;
 
 import androidx.annotation.NonNull;
 
-import com.example.grade_frontend.pojo.Teacher;
-import com.google.gson.Gson;
-
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -16,10 +13,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AuthorizationService {
+public class AuthorizationActivityService {
     private final OkHttpClient client = new OkHttpClient();
 
-    private void makeRequest(String url, AuthorizationServiceCallback callback, GetNameQueries nameQueries) {
+    private void makeRequest(String url, AuthorizationActivityServiceCallback callback, GetNameQueries nameQueries) {
         Request request = new Request.Builder().url(url).build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -58,7 +55,7 @@ public class AuthorizationService {
     }
 
     /* */
-    public void verifyTeacherOrStudent(String email, AuthorizationServiceCallback callback) {
+    public void verifyTeacherOrStudent(String email, AuthorizationActivityServiceCallback callback) {
         String url = BASE_URL + API_TEACHER + "getTeacherOrStudentByEmail?email=" + email;
         makeRequest(url, callback, GetNameQueries.TEACHER_OR_STUDENT);
     }

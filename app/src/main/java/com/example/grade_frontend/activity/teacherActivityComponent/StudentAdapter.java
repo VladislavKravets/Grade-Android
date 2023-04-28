@@ -22,11 +22,13 @@ import java.util.List;
 public class StudentAdapter extends ArrayAdapter<Student> {
     private final int layoutResource;
     private final String courseName; // предмет
+    private final String groupName; // група
 
-    public StudentAdapter(Context context, int resource, List<Student> students, String courseName) {
+    public StudentAdapter(Context context, int resource, List<Student> students, String courseName, String groupName) {
         super(context, resource, students);
         this.layoutResource = resource;
         this.courseName = courseName;
+        this.groupName = groupName;
     }
 
     @NonNull
@@ -58,6 +60,7 @@ public class StudentAdapter extends ArrayAdapter<Student> {
             intent.putExtra("student", student);
             intent.putExtra("status", Status.GET_GRADE);
             intent.putExtra("courseName", courseName);
+            intent.putExtra("groupName", groupName);
             getContext().startActivity(intent);
         });
 
@@ -66,6 +69,7 @@ public class StudentAdapter extends ArrayAdapter<Student> {
             intent.putExtra("student", student);
             intent.putExtra("status", Status.GET_ABSENCE);
             intent.putExtra("courseName", courseName);
+            intent.putExtra("groupName", groupName);
             getContext().startActivity(intent);
         });
 

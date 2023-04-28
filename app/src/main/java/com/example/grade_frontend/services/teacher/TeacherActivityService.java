@@ -23,10 +23,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class TeacherService {
+public class TeacherActivityService {
   private final OkHttpClient client = new OkHttpClient();
 
-  private void makeRequest(String url, TeacherServiceCallback callback, GetNameQueries nameQueries) {
+  private void makeRequest(String url, TeacherActivityServiceCallback callback, GetNameQueries nameQueries) {
     Request request = new Request.Builder().url(url).build();
 
     client.newCall(request).enqueue(new Callback() {
@@ -119,23 +119,23 @@ public class TeacherService {
 //    makeRequest(url, callback, GetNameQueries.STUDENT_INCOMPLETE_GROUP_LIST);
 //  }
 
-  public void getGroupInfo(int id, TeacherServiceCallback callback) {
+  public void getGroupInfo(int id, TeacherActivityServiceCallback callback) {
     String url = BASE_URL + API_TEACHER + "getGroupInfo?id=" + id;
     makeRequest(url, callback, GetNameQueries.STUDENT_GROUP_INFO);
   }
 
-  public void getStudentsInGroup(int id, TeacherServiceCallback callback) {
+  public void getStudentsInGroup(int id, TeacherActivityServiceCallback callback) {
     String url = BASE_URL + API_TEACHER + "getStudentsByStudentGroupId?id=" + id;
     makeRequest(url, callback, GetNameQueries.STUDENT_GROUP_LIST);
   }
 
-  public void getCourseByTeacherEmail(String email, int semester, TeacherServiceCallback callback) {
+  public void getCourseByTeacherEmail(String email, int semester, TeacherActivityServiceCallback callback) {
     String url = BASE_URL + API_TEACHER +
             "getCourseByTeacherEmail?email=" + email + "&" + "semester=" + semester;
     makeRequest(url, callback, GetNameQueries.GET_SUBJECTS_FOR_SEMESTER);
   }
 
-  public void getGroupByEmailSemesterAndIdNameCourse(String email, int semester, int id, TeacherServiceCallback callback) {
+  public void getGroupByEmailSemesterAndIdNameCourse(String email, int semester, int id, TeacherActivityServiceCallback callback) {
     String url = BASE_URL + API_TEACHER +
             "getGroupByEmailSemesterAndIdNameCourse?"
             + "email=" + email + "&"

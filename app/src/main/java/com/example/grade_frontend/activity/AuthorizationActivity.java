@@ -5,14 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.grade_frontend.R;
-import com.example.grade_frontend.pojo.Teacher;
-import com.example.grade_frontend.services.authorization.AuthorizationService;
-import com.example.grade_frontend.services.authorization.AuthorizationServiceCallback;
+import com.example.grade_frontend.services.authorization.AuthorizationActivityService;
+import com.example.grade_frontend.services.authorization.AuthorizationActivityServiceCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -25,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class AuthorizationActivity extends AppCompatActivity implements AuthorizationServiceCallback {
+public class AuthorizationActivity extends AppCompatActivity implements AuthorizationActivityServiceCallback {
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -80,7 +77,7 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
                         .addOnCompleteListener(this, task1 -> {
                             if (task1.isSuccessful()) {
                                 // Инициализация объекта TeacherAuthorization
-                                AuthorizationService authorizationService = new AuthorizationService();
+                                AuthorizationActivityService authorizationService = new AuthorizationActivityService();
                                 authorizationService.verifyTeacherOrStudent(account.getEmail(), this);
                             } else {
                                 // Обработка ошибок при аутентификации

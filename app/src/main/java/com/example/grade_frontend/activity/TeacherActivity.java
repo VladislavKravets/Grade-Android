@@ -20,8 +20,8 @@ import com.example.grade_frontend.pojo.CourseForGroup;
 import com.example.grade_frontend.pojo.Student;
 import com.example.grade_frontend.pojo.StudentGroupInfo;
 import com.example.grade_frontend.pojo.StudentGroupSmall;
-import com.example.grade_frontend.services.teacher.TeacherService;
-import com.example.grade_frontend.services.teacher.TeacherServiceCallback;
+import com.example.grade_frontend.services.teacher.TeacherActivityService;
+import com.example.grade_frontend.services.teacher.TeacherActivityServiceCallback;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,118 +30,153 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.List;
 
 
-public class TeacherActivity extends AppCompatActivity implements TeacherServiceCallback {
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance(); // получаем авторизованый клас с нашим юзвером
-    private ListView listView; // лист студентов
-    private Spinner listGroupSpinner; // Групируем групы преподавателя
-    private Spinner semesterSpinner; // Семестр
-    private Spinner subjectSpinner; // Предмет
-    private TextView groupInfoTextView; // Вывод информации по групе
-    private int semester; // глобально инициализируем семестр
-    private String courseName; // глобально предмет для передачи в адаптер (listView student)
+public class TeacherActivity extends AppCompatActivity implements TeacherActivityServiceCallback {
+  private FirebaseAuth mAuth = FirebaseAuth.getInstance(); // получаем авторизованый клас с нашим юзвером
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_teacher);
+  // android widgets
+  private ListView listView; // лист студентов
+  private Spinner listGroupSpinner; // Групируем групы преподавателя
+  private Spinner semesterSpinner; // Семестр
+  private Spinner subjectSpinner; // Предмет
+  private TextView groupInfoTextView; // Вывод информации по групе
 
-        TeacherService teacherService = new TeacherService(); // работа с беком
-        //teacherService.getGroupByTeacherEmail(mAuth.getCurrentUser().getEmail(), this); // получаем список груп
+  // глобальные ппеременные
+  private int semester; // глобально инициализируем семестр
+  private String courseName; // глобально предмет для передачи в адаптер (listView student)
+  private String groupName; // глобально група для передачи в studentInformation
 
-        TextView displayTextView = findViewById(R.id.textView2);
-        displayTextView.setText(mAuth.getCurrentUser().getDisplayName()); // выводим ФИО преподавателя как записано в google
+  // adapters
+  private ArrayAdapter<Integer> semesterSpinnerAdapter;
+  private ArrayAdapter<Student> listViewAdapter;
+  private SubjectSpinnerAdapter subjectSpinnerAdapter;
+  private StudentGroupSpinnerAdapter studentGroupSpinnerAdapter;
 
-        listGroupSpinner = findViewById(R.id.list_group_spinner);
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_teacher);
 
-        subjectSpinner = findViewById(R.id.subject_spiner);
+    TextView displayTextView = findViewById(R.id.textView2);
+    displayTextView.setText(mAuth.getCurrentUser().getDisplayName()); // выводим ФИО преподавателя как записано в google
 
-        /* */
-        semesterSpinner = findViewById(R.id.semestr_spinner);
-        Integer[] data = {1,2,3,4,5,6,7,8};
-        // Создаем адаптер для Spinner
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, data);
-        // Устанавливаем адаптер в Spinner
-        semesterSpinner.setAdapter(adapter);
-        /* */
+    /* initialization */
+    listGroupSpinner = findViewById(R.id.list_group_spinner);
+    subjectSpinner = findViewById(R.id.subject_spiner);
+    groupInfoTextView = findViewById(R.id.group_info_text_view);
+    listView = findViewById(R.id.listview);
+    /* */
 
-        /* */
-        groupInfoTextView = findViewById(R.id.group_info_text_view);
-        listView = findViewById(R.id.listview);
+    /* количество семестров и их инициализация*/
+    semesterSpinner = findViewById(R.id.semestr_spinner);
+    Integer[] semesters = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    semesterSpinnerAdapter = new ArrayAdapter<>(this,
+            android.R.layout.simple_spinner_dropdown_item, semesters);
+    semesterSpinner.setAdapter(semesterSpinnerAdapter);
+    /* */
 
-        // выход из аккаунта и очистка данных с мобилки
-        findViewById(R.id.logout_btn).setOnClickListener(e -> {
-            SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.clear(); // очищаем все значения
-            editor.apply(); // сохраняем изменения
+    /* buttons */
+    // выход из аккаунта и очистка данных с мобилки
+    findViewById(R.id.logout_btn).setOnClickListener(e -> {
+      SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
+      SharedPreferences.Editor editor = sharedPreferences.edit();
+      editor.clear(); // очищаем все значения
+      editor.apply(); // сохраняем изменения
 
-            mAuth.signOut();
-            GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
+      mAuth.signOut();
+      GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
 
-            Intent intent = new Intent(getApplicationContext(), AuthorizationActivity.class);
-            startActivity(intent);
-            finish();
-        });
+      Intent intent = new Intent(getApplicationContext(), AuthorizationActivity.class);
+      startActivity(intent);
+      finish();
+    });
+    /* */
 
-        // listeners
+    // listeners spinners
+    // group spinner
+    listGroupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (listViewAdapter != null) {
+          listViewAdapter.clear();
+          listViewAdapter.notifyDataSetChanged();
+        }
+        groupInfoTextView.setText("");
 
-        // group spinner
-        listGroupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        StudentGroupSmall studentGroupSmall = (StudentGroupSmall) parent.getItemAtPosition(position);
+        groupName = studentGroupSmall.getStudentGroupName();
 
-                StudentGroupSmall studentGroupSmall = (StudentGroupSmall) parent.getItemAtPosition(position);
-                if(studentGroupSmall.getStudentGroupId() > 0) {
-                    teacherService.getGroupInfo(studentGroupSmall.getStudentGroupId(), TeacherActivity.this); // инфу по групе с бекенда
-                    teacherService.getStudentsInGroup(studentGroupSmall.getStudentGroupId(), TeacherActivity.this); // инфу по все студентам
-                }else {
-                    Snackbar.make(findViewById(android.R.id.content).getRootView(),
-                            "Немає груп",
-                            Snackbar.LENGTH_LONG).show();
-                }
-            }
+        if (studentGroupSmall.getStudentGroupId() > 0) {
+          TeacherActivityService teacherService = new TeacherActivityService();
+          teacherService.getGroupInfo(studentGroupSmall.getStudentGroupId(), TeacherActivity.this); // инфу по групе с бекенда
+          teacherService.getStudentsInGroup(studentGroupSmall.getStudentGroupId(), TeacherActivity.this); // инфу по все студентам
+        } else {
+          Snackbar.make(findViewById(android.R.id.content).getRootView(),
+                  "Немає груп",
+                  Snackbar.LENGTH_LONG).show();
+        }
+      }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
-        semesterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                subjectSpinner.setSelection(0);
-                listView.setSelection(0);
-                listGroupSpinner.setSelection(0);
-                semester = (int) parent.getItemAtPosition(position);
-                teacherService.getCourseByTeacherEmail(mAuth.getCurrentUser().getEmail(), semester, TeacherActivity.this);
-            }
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+      }
+    });
+    semesterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (listViewAdapter != null) {
+          listViewAdapter.clear();
+          listViewAdapter.notifyDataSetChanged();
+        }
+        if (studentGroupSpinnerAdapter != null) {
+          studentGroupSpinnerAdapter.clear();
+          studentGroupSpinnerAdapter.notifyDataSetChanged();
+        }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
-        subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                CourseForGroup courseForGroup = (CourseForGroup) parent.getItemAtPosition(position);
-                courseName = courseForGroup.getCourseName();
-                teacherService.getGroupByEmailSemesterAndIdNameCourse(
-                        mAuth.getCurrentUser().getEmail(),
-                        semester,
-                        courseForGroup.getCourseCourseNameId(),
-                        TeacherActivity.this);
-            }
+        groupInfoTextView.setText("");
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
+        semester = (int) parent.getItemAtPosition(position);
 
-    }
+        TeacherActivityService teacherService = new TeacherActivityService(); // работа с беком
+        teacherService.getCourseByTeacherEmail(mAuth.getCurrentUser().getEmail(), semester, TeacherActivity.this);
+      }
 
-    // Обработчик нажатия кнопки Назад
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        // Вернуться на MainActivity
-    }
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+      }
+    });
+    subjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (listViewAdapter != null) {
+          listViewAdapter.clear();
+          listViewAdapter.notifyDataSetChanged();
+        }
+        groupInfoTextView.setText("");
+
+        CourseForGroup courseForGroup = (CourseForGroup) parent.getItemAtPosition(position);
+        courseName = courseForGroup.getCourseName();
+
+        TeacherActivityService teacherService = new TeacherActivityService(); // работа с беком
+        teacherService.getGroupByEmailSemesterAndIdNameCourse(
+                mAuth.getCurrentUser().getEmail(),
+                semester,
+                courseForGroup.getCourseCourseNameId(),
+                TeacherActivity.this);
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> parent) {
+      }
+    });
+
+  }
+
+  // Обработчик нажатия кнопки Назад
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+  }
+
 
 //    @Override
 //    public void onTeacherInfoForGroups(List<CourseForGroups> studentGroupList) {
@@ -153,43 +188,46 @@ public class TeacherActivity extends AppCompatActivity implements TeacherService
 //        });
 //    }
 
-    @Override
-    public void onGroupInfoForId(StudentGroupInfo studentGroupInfo) {
-        runOnUiThread(() -> {
-            groupInfoTextView.setText(studentGroupInfo.toString());
-        });
-    }
+  // информация по групе
+  @Override
+  public void onGroupInfoForId(StudentGroupInfo studentGroupInfo) {
+    runOnUiThread(() -> {
+      groupInfoTextView.setText(studentGroupInfo.toString());
+    });
+  }
 
-    @Override
-    public void onStudentsGroupList(List<Student> studentList) {
-        runOnUiThread(() -> {
-            ArrayAdapter<Student> adapter = new StudentAdapter(this,
-                    R.layout.student_view,
-                    studentList,
-                    courseName);
+  // получаем список студентов групы
+  @Override
+  public void onStudentsGroupList(List<Student> studentList) {
+    runOnUiThread(() -> {
+      listViewAdapter = new StudentAdapter(this,
+              R.layout.student_view,
+              studentList,
+              courseName,
+              groupName
+      );
+      listView.setAdapter(listViewAdapter);
+    });
+  }
 
-            listView.setAdapter(adapter);
-        });
-    }
+  // получаем список предметов
+  @Override
+  public void onCourseByTeacherEmail(List<CourseForGroup> courseForGroups) {
+    runOnUiThread(() -> {
+      subjectSpinnerAdapter = new SubjectSpinnerAdapter(this,
+              courseForGroups);
+      subjectSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      subjectSpinner.setAdapter(subjectSpinnerAdapter);
+    });
+  }
 
-    @Override
-    public void onCourseByTeacherEmail(List<CourseForGroup> courseForGroups) {
-        runOnUiThread(() -> {
-            SubjectSpinnerAdapter groupSpinnerAdapter = new SubjectSpinnerAdapter(this,
-                    courseForGroups);
-            groupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            subjectSpinner.setAdapter(groupSpinnerAdapter);
-        });
-    }
-
-    @Override
-    public void onGroupsByTeacherEmail(List<StudentGroupSmall> studentGroupSmall) {
-        runOnUiThread(() -> {
-            StudentGroupSpinnerAdapter studentGroupSpinnerAdapter
-                    = new StudentGroupSpinnerAdapter(this, studentGroupSmall);
-
-            studentGroupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            listGroupSpinner.setAdapter(studentGroupSpinnerAdapter);
-        });
-    }
+  // получаем список груп
+  @Override
+  public void onGroupsByTeacherEmail(List<StudentGroupSmall> studentGroupSmall) {
+    runOnUiThread(() -> {
+      studentGroupSpinnerAdapter = new StudentGroupSpinnerAdapter(this, studentGroupSmall);
+      studentGroupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      listGroupSpinner.setAdapter(studentGroupSpinnerAdapter);
+    });
+  }
 }

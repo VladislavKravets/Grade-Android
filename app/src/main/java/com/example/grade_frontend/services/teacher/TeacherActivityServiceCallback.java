@@ -7,7 +7,7 @@ import com.example.grade_frontend.pojo.StudentGroupSmall;
 
 import java.util.List;
 
-public interface TeacherServiceCallback {
+public interface TeacherActivityServiceCallback {
 //    void onTeacherInfoForGroups(List<CourseForGroups> studentGroupList);
     void onGroupInfoForId(StudentGroupInfo studentGroupInfo);
     void onStudentsGroupList(List<Student> studentList);
