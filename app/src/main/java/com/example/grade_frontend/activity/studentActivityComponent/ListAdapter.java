@@ -1,4 +1,4 @@
-package com.example.grade_frontend.activity.studentInformationComponent;
+package com.example.grade_frontend.activity.studentActivityComponent;
 
 import android.content.Context;
 import android.view.LayoutInflater;

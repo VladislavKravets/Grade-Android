@@ -13,6 +13,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:text="teacherName"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,6 +24,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="5dp"
         android:text="Групи:"
+        app:layout_constraintBottom_toBottomOf="@+id/list_group_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/list_group_spinner" />
 
@@ -60,6 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Вийти"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -80,6 +83,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="5dp"
         android:text="Семестр:"
+        app:layout_constraintBottom_toBottomOf="@+id/semestr_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/semestr_spinner" />
 
@@ -98,8 +102,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Предмет"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/subject_spiner"
+        app:layout_constraintStart_toStartOf="@+id/subject_spiner"
         app:layout_constraintTop_toBottomOf="@+id/semestr_spinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

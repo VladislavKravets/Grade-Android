@@ -13,8 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.grade_frontend.R;
-import com.example.grade_frontend.activity.StudentInformation;
-import com.example.grade_frontend.activity.TeacherActivity;
+import com.example.grade_frontend.activity.StudentInformationActivity;
 import com.example.grade_frontend.pojo.Student;
 
 import java.util.List;
@@ -56,7 +55,7 @@ public class StudentAdapter extends ArrayAdapter<Student> {
 
         // Обрабатываем нажатия на кнопки "Посмотреть оценки" и "Пропуски"
         scoresButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), StudentInformation.class);
+            Intent intent = new Intent(getContext(), StudentInformationActivity.class);
             intent.putExtra("student", student);
             intent.putExtra("status", Status.GET_GRADE);
             intent.putExtra("courseName", courseName);
@@ -65,7 +64,7 @@ public class StudentAdapter extends ArrayAdapter<Student> {
         });
 
         absencesButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getContext(), StudentInformation.class);
+            Intent intent = new Intent(getContext(), StudentInformationActivity.class);
             intent.putExtra("student", student);
             intent.putExtra("status", Status.GET_ABSENCE);
             intent.putExtra("courseName", courseName);

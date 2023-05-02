@@ -23,118 +23,105 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class AuthorizationActivity extends AppCompatActivity implements AuthorizationActivityServiceCallback {
+  private static final int RC_SIGN_IN = 9001;
+  private GoogleSignInClient mGoogleSignInClient;
+  private FirebaseAuth mAuth;
 
-    private static final int RC_SIGN_IN = 9001;
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    setTitle("Авторизуйтесь будь ласка");
 
-    private GoogleSignInClient mGoogleSignInClient;
+    // Получение объекта GoogleSignInClient
+    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
 
-    private FirebaseAuth mAuth;
+    mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    // Получение объекта FirebaseAuth
+    mAuth = FirebaseAuth.getInstance();
 
+    // Очистка автосохранения выбора
+    mAuth.signOut();
+    GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
 
-        // Получение объекта GoogleSignInClient
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+    // Отображение кнопки для аутентификации через Google
+    Button signGoogleInButton = findViewById(R.id.google_auth_button);
+    signGoogleInButton.setOnClickListener(view -> loginWithGoogle());
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+  }
 
-        // Получение объекта FirebaseAuth
-        mAuth = FirebaseAuth.getInstance();
+  // формируем url для google
+  private void loginWithGoogle() {
+    Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+    startActivityForResult(signInIntent, RC_SIGN_IN);
+  }
 
-        // Очистка автосохранения выбора
+  // гугл авторизация
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == RC_SIGN_IN) {
+      Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+      try {
+        // Аутентификация в Firebase с помощью учетных данных Google
+        GoogleSignInAccount account = task.getResult(ApiException.class);
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, task1 -> {
+          if (task1.isSuccessful()) {
+            // Инициализация объекта TeacherAuthorization
+            AuthorizationActivityService authorizationService = new AuthorizationActivityService();
+            authorizationService.verifyTeacherOrStudent(account.getEmail(), this);
+          } else {
+            // Обработка ошибок при аутентификации
+            Snackbar.make(findViewById(android.R.id.content).getRootView(), "Authentication failed.", Snackbar.LENGTH_LONG).show();
+          }
+        });
+      } catch (ApiException e) {
+        // Обработка ошибок при выборе учетной записи Google
+        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Google sign in failed.", Snackbar.LENGTH_LONG).show();
+      }
+    }
+  }
+
+  @Override
+  public void verifyOnTeacherOrStudent(String nameEntity) {
+    FirebaseUser user = mAuth.getCurrentUser();
+
+    // Сохранение данных пользователя в SharedPreferences
+    SharedPreferences.Editor editor = getSharedPreferences("UserData", MODE_PRIVATE).edit();
+
+    editor.putString("userId", user.getUid());
+    editor.putString("email", user.getEmail());
+
+    switch (nameEntity) {
+      case "teacher": {
+        editor.putString("role", "teacher");
+        editor.apply();
+
+        Intent intent = new Intent(this, TeacherActivity.class);
+        startActivity(intent);
+        finish();
+      }
+      break;
+      case "student": {
+        editor.putString("role", "student");
+        editor.apply();
+
+        Intent intent = new Intent(this, StudentActivity.class);
+        startActivity(intent);
+        finish();
+      }
+      break;
+      default: {
         mAuth.signOut();
         GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
 
-        // Отображение кнопки для аутентификации через Google
-        Button signGoogleInButton = findViewById(R.id.google_auth_button);
-        signGoogleInButton.setOnClickListener(view -> loginWithGoogle());
+        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Помилка вашої ролі немає в базі даних", Snackbar.LENGTH_LONG).show();
 
+      }
     }
-
-    // формируем url для google
-    private void loginWithGoogle() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    // гугл авторизация
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Аутентификация в Firebase с помощью учетных данных Google
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                mAuth.signInWithCredential(credential)
-                        .addOnCompleteListener(this, task1 -> {
-                            if (task1.isSuccessful()) {
-                                // Инициализация объекта TeacherAuthorization
-                                AuthorizationActivityService authorizationService = new AuthorizationActivityService();
-                                authorizationService.verifyTeacherOrStudent(account.getEmail(), this);
-                            } else {
-                                // Обработка ошибок при аутентификации
-                                Snackbar.make(findViewById(android.R.id.content).getRootView(),
-                                        "Authentication failed.",
-                                        Snackbar.LENGTH_LONG).show();
-                            }
-                        });
-            } catch (ApiException e) {
-                // Обработка ошибок при выборе учетной записи Google
-                Snackbar.make(findViewById(android.R.id.content).getRootView(),
-                        "Google sign in failed.",
-                        Snackbar.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
-    public void verifyOnTeacherOrStudent(String nameEntity) {
-        FirebaseUser user = mAuth.getCurrentUser();
-
-        // Сохранение данных пользователя в SharedPreferences
-        SharedPreferences.Editor editor = getSharedPreferences(
-                "UserData", MODE_PRIVATE
-        ).edit();
-
-        editor.putString("userId", user.getUid());
-        editor.putString("email", user.getEmail());
-
-        switch (nameEntity) {
-            case "teacher": {
-                editor.putString("role", "teacher");
-                editor.apply();
-
-                Intent intent = new Intent(this, TeacherActivity.class);
-                startActivity(intent);
-                finish();
-            }break;
-            case "student": {
-                editor.putString("role", "student");
-                editor.apply();
-
-                Intent intent = new Intent(this, StudentActivity.class);
-                startActivity(intent);
-                finish();
-            }break;
-            default: {
-                mAuth.signOut();
-                GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
-
-                Snackbar.make(findViewById(android.R.id.content).getRootView(),
-                        "Помилка вашої ролі немає в базі даних",
-                        Snackbar.LENGTH_LONG).show();
-
-            }
-        }
-    }
+  }
 
 
 }

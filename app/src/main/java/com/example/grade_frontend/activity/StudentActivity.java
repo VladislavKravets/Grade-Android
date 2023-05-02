@@ -8,13 +8,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.grade_frontend.R;
-import com.example.grade_frontend.activity.studentInformationComponent.ListAdapter;
+import com.example.grade_frontend.activity.studentActivityComponent.DatePickerFragment;
+import com.example.grade_frontend.activity.studentActivityComponent.ListAdapter;
 import com.example.grade_frontend.pojo.Absence;
 import com.example.grade_frontend.pojo.Grade;
 import com.example.grade_frontend.services.student.StudentActivityService;
@@ -26,7 +28,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,6 +39,10 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
   private String course; // выбраный предмет
   private boolean gradeOrAbsence = false;
 
+  // диапазон дат между оценками / пропусками
+  private final int[] fromDate = {2000, 1, 1};
+  private final int[] toDate = {2023, 1, 1};
+
   private ListAdapter listViewAdapter; // адаптер вывода оценок и пропусков
   private ArrayAdapter<String> courseAdapter; // адаптер предметов
 
@@ -45,6 +50,13 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_student);
+    // Установить кастомный заголовок
+    getSupportActionBar().setDisplayShowCustomEnabled(true);
+    getSupportActionBar().setCustomView(R.layout.active_user_title);
+    // Получить ссылки на элементы в заголовке
+    TextView titleText = findViewById(R.id.title_text);
+    Button titleButton = findViewById(R.id.title_button);
+    titleText.setText("Студент " + mAuth.getCurrentUser().getDisplayName());
 
     // initialization
     Spinner semesterSpinner = findViewById(R.id.semesterSpinner); // семестр
@@ -65,7 +77,7 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
     /* */
 
     // выход из аккаунта и очистка данных с мобилки
-    findViewById(R.id.logout_btn).setOnClickListener(e -> {
+    titleButton.setOnClickListener(e -> {
       SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
       SharedPreferences.Editor editor = sharedPreferences.edit();
       editor.clear(); // очищаем все значения
@@ -79,6 +91,32 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
       finish();
     });
 
+    Button fromDateButton = findViewById(R.id.show_from_date_button);
+    fromDateButton.setText(fromDate[0] + "-" + fromDate[1] + "-" + fromDate[2]);
+    fromDateButton.setOnClickListener(v -> {
+      DatePickerFragment datePickerFragment = new DatePickerFragment();
+      datePickerFragment.setListener((view, year, month, dayOfMonth) -> {
+        fromDate[0] = year;
+        fromDate[1]= month;
+        fromDate[2] = dayOfMonth;
+        fromDateButton.setText(fromDate[0] + "-" + fromDate[1] + "-" + fromDate[2]);
+      });
+      datePickerFragment.show(getSupportFragmentManager(), "datePicker");
+    });
+
+    Button toDateButton = findViewById(R.id.show_to_date_button);
+    toDateButton.setText(toDate[0] + "-" + toDate[1] + "-" + toDate[2]);
+    toDateButton.setOnClickListener(v -> {
+      DatePickerFragment datePickerFragment = new DatePickerFragment();
+      datePickerFragment.setListener((view, year, month, dayOfMonth) -> {
+        toDate[0] = year;
+        toDate[1]= month;
+        toDate[2] = dayOfMonth;
+        toDateButton.setText(toDate[0] + "-" + toDate[1] + "-" + toDate[2]);
+      });
+      datePickerFragment.show(getSupportFragmentManager(), "datePicker");
+    });
+
     /* Switch listener */
     // grade or absence
     switchGradeOrAbsence.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -90,7 +128,6 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
       }
       getGradeOrAbsence();
     });
-
 
     /* spinner listener */
     // semester
@@ -131,14 +168,14 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
     StudentInformationService studentInformationService = new StudentInformationService();
     if (gradeOrAbsence) {
       studentInformationService.getAbsenceByStudentEmailAndDate(mAuth.getCurrentUser().getEmail(),
-              LocalDate.of(2000, 1, 1),
-              LocalDate.now(),
+              fromDate,
+              toDate,
               StudentActivity.this
       );
     }else{
       studentInformationService.getGradeByStudentEmailAndDate(mAuth.getCurrentUser().getEmail(),
-              LocalDate.of(2000,1,1),
-              LocalDate.now(),
+              fromDate,
+              toDate,
               StudentActivity.this
       );
     }
@@ -148,18 +185,24 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
   @Override
   public void onStudentForGrade(List<Grade> grades) {
     runOnUiThread(() -> {
-      List<Grade> gradeFilterList = grades.stream()
-              .filter(g -> g.getCourseName().equals(course))
-              .map(g -> new Grade(g.getGrade(), g.getCourseName(), g.getCreatedAt()))
-              .collect(Collectors.toList());
-      if (gradeFilterList.size() == 0) {
+      if(grades != null) {
+        List<Grade> gradeFilterList = grades.stream()
+                .filter(g -> g.getCourseName().equals(course))
+                .map(g -> new Grade(g.getGrade(), g.getCourseName(), g.getCreatedAt()))
+                .collect(Collectors.toList());
+        if (gradeFilterList.size() == 0) {
+          Snackbar.make(findViewById(android.R.id.content).getRootView(),
+                  "Немає оцінок по предмету",
+                  Snackbar.LENGTH_LONG).show();
+        } else {
+          List<Object> objectGrades = new ArrayList<>(gradeFilterList);
+          listViewAdapter = new ListAdapter(this, objectGrades);
+          listView.setAdapter(listViewAdapter);
+        }
+      }else{
         Snackbar.make(findViewById(android.R.id.content).getRootView(),
-                "Немає оцінок по предмету",
+                "Помилка підключення до серверу",
                 Snackbar.LENGTH_LONG).show();
-      } else {
-        List<Object> objectGrades = new ArrayList<>(gradeFilterList);
-        listViewAdapter = new ListAdapter(this, objectGrades);
-        listView.setAdapter(listViewAdapter);
       }
     });
   }
@@ -167,18 +210,24 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
   @Override
   public void onStudentForAbsence(List<Absence> absences) {
     runOnUiThread(() -> {
-      List<Absence> absencesFilterList = absences.stream()
-              .filter(a -> a.getCourseName().equals(course))
-              .map(a -> new Absence(a.getCourseName(), a.getDate()))
-              .collect(Collectors.toList());
-      if (absencesFilterList.size() == 0) {
+      if(absences != null) {
+        List<Absence> absencesFilterList = absences.stream()
+                .filter(a -> a.getCourseName().equals(course))
+                .map(a -> new Absence(a.getCourseName(), a.getDate()))
+                .collect(Collectors.toList());
+        if (absencesFilterList.size() == 0) {
+          Snackbar.make(findViewById(android.R.id.content).getRootView(),
+                  "Немає відсутності по предмету",
+                  Snackbar.LENGTH_LONG).show();
+        } else {
+          List<Object> objectAbsence = new ArrayList<>(absencesFilterList);
+          listViewAdapter = new ListAdapter(this, objectAbsence);
+          listView.setAdapter(listViewAdapter);
+        }
+      }else{
         Snackbar.make(findViewById(android.R.id.content).getRootView(),
-                "Немає відсутності по предмету",
+                "Помилка підключення до серверу",
                 Snackbar.LENGTH_LONG).show();
-      } else {
-        List<Object> objectAbsence = new ArrayList<>(absencesFilterList);
-        listViewAdapter = new ListAdapter(this, objectAbsence);
-        listView.setAdapter(listViewAdapter);
       }
     });
   }
@@ -186,9 +235,15 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
   @Override
   public void onCourseForStudentEmail(List<String> courses) {
     runOnUiThread(() -> {
-      courseAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
-      courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      courseSpinner.setAdapter(courseAdapter);
+      if(courses != null) {
+        courseAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
+        courseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        courseSpinner.setAdapter(courseAdapter);
+      }else{
+        Snackbar.make(findViewById(android.R.id.content).getRootView(),
+                "Помилка підключення до серверу",
+                Snackbar.LENGTH_LONG).show();
+      }
     });
   }
 }

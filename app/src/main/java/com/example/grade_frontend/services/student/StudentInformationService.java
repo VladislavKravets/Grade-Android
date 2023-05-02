@@ -81,23 +81,22 @@ public class StudentInformationService {
     });
   }
 
-  public void getGradeByStudentEmailAndDate(String email, LocalDate startDate, LocalDate endDate, StudentInformationActivityServiceCallback callback) {
+  //public void getGradeByStudentEmailAndDate(String email, LocalDate startDate, LocalDate endDate, StudentInformationActivityServiceCallback callback) {
+  public void getGradeByStudentEmailAndDate(String email, int[] startDate, int[] endDate,
+                                            StudentInformationActivityServiceCallback callback) {
     String url = BASE_URL + API_STUDENT + "getGradesByStudentEmail"
             + "?email=" + email
-            + "&startDate=" + startDate
-            + "&endDate=" + endDate;
+            + "&startDate=" + LocalDate.of(startDate[0], startDate[1], startDate[2])
+            + "&endDate=" + LocalDate.of(endDate[0], endDate[1], endDate[2]);
     makeRequest(url, callback, GetNameQueries.GRADE_FOR_STUDENT);
   }
 
-  public void getAbsenceByStudentEmailAndDate(String email, LocalDate startDate,
-                                              LocalDate endDate,
+  public void getAbsenceByStudentEmailAndDate(String email, int[] startDate, int[] endDate,
                                               StudentInformationActivityServiceCallback callback) {
     String url = BASE_URL + API_STUDENT + "getAbsencesByStudentEmail"
             + "?email=" + email
-            + "&startDate=" + startDate
-            + "&endDate=" + endDate;
+            + "&startDate=" + LocalDate.of(startDate[0], startDate[1], startDate[2])
+            + "&endDate=" + LocalDate.of(endDate[0], endDate[1], endDate[2]);
     makeRequest(url, callback, GetNameQueries.ABSENCE_FOR_STUDENT);
   }
-
-
 }

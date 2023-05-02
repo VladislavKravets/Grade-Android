@@ -3,16 +3,14 @@ package com.example.grade_frontend.activity;
 import static com.example.grade_frontend.activity.teacherActivityComponent.Status.GET_ABSENCE;
 import static com.example.grade_frontend.activity.teacherActivityComponent.Status.GET_GRADE;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.grade_frontend.R;
-import com.example.grade_frontend.activity.studentInformationComponent.ListAdapter;
+import com.example.grade_frontend.activity.studentActivityComponent.ListAdapter;
 import com.example.grade_frontend.pojo.Absence;
 import com.example.grade_frontend.pojo.Grade;
 import com.example.grade_frontend.pojo.Student;
@@ -20,12 +18,11 @@ import com.example.grade_frontend.services.student.StudentInformationService;
 import com.example.grade_frontend.services.student.StudentInformationActivityServiceCallback;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StudentInformation extends AppCompatActivity implements StudentInformationActivityServiceCallback {
+public class StudentInformationActivity extends AppCompatActivity implements StudentInformationActivityServiceCallback {
   private String course;
   private ListView listView;
 
@@ -35,7 +32,6 @@ public class StudentInformation extends AppCompatActivity implements StudentInfo
     setContentView(R.layout.activity_student_information);
 
     // initialization
-
     listView = findViewById(R.id.listView);
 
     //
@@ -48,24 +44,29 @@ public class StudentInformation extends AppCompatActivity implements StudentInfo
 
     if (GET_GRADE.equals(status)) {
       studentService.getGradeByStudentEmailAndDate(student.getEmail(),
-              LocalDate.of(2000, 1, 1),
-              LocalDate.now(),
+              new int[] {2000,1,1},
+              new int[] {2023,1,1},
+//              LocalDate.of(2000, 1, 1),
+//              LocalDate.now(),
               this
       );
     } else if (GET_ABSENCE.equals(status)) {
       studentService.getAbsenceByStudentEmailAndDate(student.getEmail(),
-              LocalDate.of(2000, 1, 1),
-              LocalDate.now(),
+              new int[] {2000,1,1},
+              new int[] {2023,1,1},
+//              LocalDate.of(2000, 1, 1),
+//              LocalDate.now(),
               this
       );
     }
 
+    setTitle("Студент: " + student.toString());
+
     TextView textView = findViewById(R.id.student_text_view);
-    textView.setText("Студент: " + student.toString() + "\nГрупа: " +  groupName + "\n"
-                    + (status.equals(GET_GRADE) ? "Оцінки" : "Пропуски" + " студента"));
+    textView.setText("Група: " +  groupName + "\n"
+            + (status.equals(GET_GRADE) ? "Оцінки" : "Пропуски" + " студента"));
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.N)
   @Override
   public void onStudentForGrade(List<Grade> grades) {
     runOnUiThread(() -> {
@@ -85,7 +86,6 @@ public class StudentInformation extends AppCompatActivity implements StudentInfo
     });
   }
 
-  @RequiresApi(api = Build.VERSION_CODES.N)
   @Override
   public void onStudentForAbsence(List<Absence> absences) {
     runOnUiThread(() -> {

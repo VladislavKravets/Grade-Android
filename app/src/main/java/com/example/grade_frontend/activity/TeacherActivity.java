@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,6 +56,15 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_teacher);
+    // Установить кастомный заголовок
+    getSupportActionBar().setDisplayShowCustomEnabled(true);
+    getSupportActionBar().setCustomView(R.layout.active_user_title);
+
+    // Получить ссылки на элементы в заголовке
+    TextView titleText = findViewById(R.id.title_text);
+    Button titleButton = findViewById(R.id.title_button);
+
+    titleText.setText("Викладач " + mAuth.getCurrentUser().getDisplayName());
 
     TextView displayTextView = findViewById(R.id.textView2);
     displayTextView.setText(mAuth.getCurrentUser().getDisplayName()); // выводим ФИО преподавателя как записано в google
@@ -76,7 +86,7 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
 
     /* buttons */
     // выход из аккаунта и очистка данных с мобилки
-    findViewById(R.id.logout_btn).setOnClickListener(e -> {
+    titleButton.setOnClickListener(e -> {
       SharedPreferences sharedPreferences = getSharedPreferences("UserData", MODE_PRIVATE);
       SharedPreferences.Editor editor = sharedPreferences.edit();
       editor.clear(); // очищаем все значения
@@ -177,7 +187,6 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
     super.onBackPressed();
   }
 
-
 //    @Override
 //    public void onTeacherInfoForGroups(List<CourseForGroups> studentGroupList) {
 //        runOnUiThread(() -> {
@@ -200,13 +209,15 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   @Override
   public void onStudentsGroupList(List<Student> studentList) {
     runOnUiThread(() -> {
-      listViewAdapter = new StudentAdapter(this,
-              R.layout.student_view,
-              studentList,
-              courseName,
-              groupName
-      );
-      listView.setAdapter(listViewAdapter);
+      if(studentList != null) {
+        listViewAdapter = new StudentAdapter(this,
+                R.layout.list_item_student,
+                studentList,
+                courseName,
+                groupName
+        );
+        listView.setAdapter(listViewAdapter);
+      }
     });
   }
 
@@ -214,10 +225,11 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   @Override
   public void onCourseByTeacherEmail(List<CourseForGroup> courseForGroups) {
     runOnUiThread(() -> {
-      subjectSpinnerAdapter = new SubjectSpinnerAdapter(this,
-              courseForGroups);
-      subjectSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      subjectSpinner.setAdapter(subjectSpinnerAdapter);
+      if(courseForGroups != null) {
+        subjectSpinnerAdapter = new SubjectSpinnerAdapter(this, courseForGroups);
+        subjectSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        subjectSpinner.setAdapter(subjectSpinnerAdapter);
+      }
     });
   }
 
@@ -225,9 +237,11 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   @Override
   public void onGroupsByTeacherEmail(List<StudentGroupSmall> studentGroupSmall) {
     runOnUiThread(() -> {
-      studentGroupSpinnerAdapter = new StudentGroupSpinnerAdapter(this, studentGroupSmall);
-      studentGroupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-      listGroupSpinner.setAdapter(studentGroupSpinnerAdapter);
+      if(studentGroupSmall != null) {
+        studentGroupSpinnerAdapter = new StudentGroupSpinnerAdapter(this, studentGroupSmall);
+        studentGroupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        listGroupSpinner.setAdapter(studentGroupSpinnerAdapter);
+      }
     });
   }
 }
