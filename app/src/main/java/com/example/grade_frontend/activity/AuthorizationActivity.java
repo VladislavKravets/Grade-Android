@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Window;
 import android.widget.Button;
 
 import com.example.grade_frontend.R;
@@ -30,8 +31,10 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    supportRequestWindowFeature(Window.FEATURE_NO_TITLE); // Удаление заголовка
     setContentView(R.layout.activity_authorization);
-    setTitle("Авторизуйтесь будь ласка");
+
+//    setTitle("Авторизуйтесь будь ласка");
 
     // Получение объекта GoogleSignInClient
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
