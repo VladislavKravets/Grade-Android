@@ -4,8 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,4 +29,15 @@ public class Grade implements Serializable {
   @SerializedName("createdAt")
   @Expose
   private String createdAt;
+
+  public String getCreatedAt() {
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    try {
+      Date date = formatter.parse(createdAt);
+      return formatter.format(date);
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 }

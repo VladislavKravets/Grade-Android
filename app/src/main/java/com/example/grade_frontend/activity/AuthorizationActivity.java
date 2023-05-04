@@ -30,7 +30,7 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.activity_authorization);
     setTitle("Авторизуйтесь будь ласка");
 
     // Получение объекта GoogleSignInClient
@@ -117,7 +117,7 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
         mAuth.signOut();
         GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
 
-        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Помилка вашої ролі немає в базі даних", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(findViewById(android.R.id.content).getRootView(), "Не знайдено в базі даних.", Snackbar.LENGTH_LONG).show();
 
       }
     }

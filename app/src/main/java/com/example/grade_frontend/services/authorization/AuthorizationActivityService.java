@@ -23,16 +23,13 @@ public class AuthorizationActivityService {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
-
                 // обработка без успешного получения запроса
                 switch (nameQueries) {
                     case TEACHER_OR_STUDENT: {
                         callback.verifyOnTeacherOrStudent("");
                     }break;
                 }
-
             }
-
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {

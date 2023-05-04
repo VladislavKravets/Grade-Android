@@ -11,13 +11,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class StartActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         SharedPreferences prefs = getSharedPreferences("UserData", MODE_PRIVATE);
-
         if (prefs.contains("userId")) {
             // Пользователь уже аутентифицирован
             if (prefs.getString("role", "").equals("teacher")) {

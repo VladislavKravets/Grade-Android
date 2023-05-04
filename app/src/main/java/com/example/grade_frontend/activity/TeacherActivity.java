@@ -59,7 +59,6 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
     // Установить кастомный заголовок
     getSupportActionBar().setDisplayShowCustomEnabled(true);
     getSupportActionBar().setCustomView(R.layout.active_user_title);
-
     // Получить ссылки на элементы в заголовке
     TextView titleText = findViewById(R.id.title_text);
     Button titleButton = findViewById(R.id.title_button);
@@ -175,10 +174,8 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
       }
 
       @Override
-      public void onNothingSelected(AdapterView<?> parent) {
-      }
+      public void onNothingSelected(AdapterView<?> parent) { }
     });
-
   }
 
   // Обработчик нажатия кнопки Назад
