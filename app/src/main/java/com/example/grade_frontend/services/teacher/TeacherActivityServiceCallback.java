@@ -13,5 +13,4 @@ public interface TeacherActivityServiceCallback {
     void onStudentsGroupList(List<Student> studentList);
     void onCourseByTeacherEmail(List<CourseForGroup> courseForGroups);
     void onGroupsByTeacherEmail(List<StudentGroupSmall> studentGroupSmall);
-
 }

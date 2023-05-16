@@ -16,12 +16,9 @@ import com.example.grade_frontend.pojo.Grade;
 import java.util.List;
 
 public class ListAdapter extends ArrayAdapter<Object> {
-
   private static final int TYPE_ABSENCE = 0;
   private static final int TYPE_GRADE = 1;
-
-  private LayoutInflater inflater;
-
+  private final LayoutInflater inflater;
   public ListAdapter(Context context, List<Object> objects) {
     super(context, 0, objects);
     inflater = LayoutInflater.from(context);

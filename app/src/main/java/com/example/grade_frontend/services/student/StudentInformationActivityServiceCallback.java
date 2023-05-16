@@ -8,5 +8,4 @@ import java.util.List;
 public interface StudentInformationActivityServiceCallback {
   void onStudentForGrade(List<Grade> grades);
   void onStudentForAbsence(List<Absence> absences);
-
 }

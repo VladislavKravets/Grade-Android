@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import okhttp3.Call;
@@ -82,21 +83,26 @@ public class StudentInformationService {
   }
 
   //public void getGradeByStudentEmailAndDate(String email, LocalDate startDate, LocalDate endDate, StudentInformationActivityServiceCallback callback) {
-  public void getGradeByStudentEmailAndDate(String email, int[] startDate, int[] endDate,
+  public void getGradeByStudentEmailAndDate(String email, String startDate, String endDate,
                                             StudentInformationActivityServiceCallback callback) {
     String url = BASE_URL + API_STUDENT + "getGradesByStudentEmail"
             + "?email=" + email
-            + "&startDate=" + LocalDate.of(startDate[0], startDate[1], startDate[2])
-            + "&endDate=" + LocalDate.of(endDate[0], endDate[1], endDate[2]);
+            + "&startDate=" + stringToLocalDate(startDate)
+            + "&endDate=" + stringToLocalDate(endDate);
     makeRequest(url, callback, GetNameQueries.GRADE_FOR_STUDENT);
   }
 
-  public void getAbsenceByStudentEmailAndDate(String email, int[] startDate, int[] endDate,
+  public void getAbsenceByStudentEmailAndDate(String email, String startDate, String endDate,
                                               StudentInformationActivityServiceCallback callback) {
     String url = BASE_URL + API_STUDENT + "getAbsencesByStudentEmail"
             + "?email=" + email
-            + "&startDate=" + LocalDate.of(startDate[0], startDate[1], startDate[2])
-            + "&endDate=" + LocalDate.of(endDate[0], endDate[1], endDate[2]);
+            + "&startDate=" + stringToLocalDate(startDate)
+            + "&endDate=" + stringToLocalDate(endDate);
     makeRequest(url, callback, GetNameQueries.ABSENCE_FOR_STUDENT);
+  }
+
+  private LocalDate stringToLocalDate(String date){
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    return LocalDate.parse(date, formatter);
   }
 }

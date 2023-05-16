@@ -27,7 +27,6 @@ public class Student implements Serializable {
     @SerializedName("email")
     @Expose
     private String email;
-
     @Override
     public String toString() {
         return surname + " " + name + " " + patronimic;

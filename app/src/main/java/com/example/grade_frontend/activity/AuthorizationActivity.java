@@ -33,25 +33,17 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
     super.onCreate(savedInstanceState);
     supportRequestWindowFeature(Window.FEATURE_NO_TITLE); // Удаление заголовка
     setContentView(R.layout.activity_authorization);
-
-//    setTitle("Авторизуйтесь будь ласка");
-
     // Получение объекта GoogleSignInClient
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-
     mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
     // Получение объекта FirebaseAuth
     mAuth = FirebaseAuth.getInstance();
-
     // Очистка автосохранения выбора
     mAuth.signOut();
     GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN).signOut();
-
     // Отображение кнопки для аутентификации через Google
     Button signGoogleInButton = findViewById(R.id.google_auth_button);
     signGoogleInButton.setOnClickListener(view -> loginWithGoogle());
-
   }
 
   // формируем url для google
@@ -125,6 +117,4 @@ public class AuthorizationActivity extends AppCompatActivity implements Authoriz
       }
     }
   }
-
-
 }

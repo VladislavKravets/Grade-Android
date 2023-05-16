@@ -64,16 +64,16 @@ public class StudentGroupInfo {
     @NonNull
     @Override
     public String toString() {
-        return "Назва групи: '" + name + '\n' +
+        return "Назва групи: " + name + '\n' +
                 "Рік навчання: " + beginYears + '\n' +
                 "Рік вступу: " + creationYear + '\n' +
                 "Навчальні семестр: " + studySemesters + '\n' +
                 "Роки навчання: " + studyYears + '\n' +
-                "Назва спеціалізації: '" + specializationName + '\n' +
-                "Спеціалізація Ступінь Найменування: '" + specializationDegreeName + '\n' +
-                "Назва кафедри: '" + specializationDepartmentName + '\n' +
-                "Назва Факультету: '" + specializationFacultyName + '\n' +
-                "Назва спеціальності: '" + specializationSpecialityName + '\n' +
+                "Назва спеціалізації: " + specializationName + '\n' +
+                "Спеціалізація: " + specializationDegreeName + '\n' +
+                "Назва кафедри: " + specializationDepartmentName + '\n' +
+                "Назва Факультету: " + specializationFacultyName + '\n' +
+                "Назва спеціальності: " + specializationSpecialityName + '\n' +
                 "Куратор: " + specializationProgramHeadName
                 + " " + specializationProgramHeadPatronimic + " " +  specializationProgramHeadSurname;
     }

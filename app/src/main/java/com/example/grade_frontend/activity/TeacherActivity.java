@@ -33,19 +33,16 @@ import java.util.List;
 
 public class TeacherActivity extends AppCompatActivity implements TeacherActivityServiceCallback {
   private FirebaseAuth mAuth = FirebaseAuth.getInstance(); // получаем авторизованый клас с нашим юзвером
-
   // android widgets
   private ListView listView; // лист студентов
   private Spinner listGroupSpinner; // Групируем групы преподавателя
   private Spinner semesterSpinner; // Семестр
   private Spinner subjectSpinner; // Предмет
   private TextView groupInfoTextView; // Вывод информации по групе
-
   // глобальные ппеременные
   private int semester; // глобально инициализируем семестр
   private String courseName; // глобально предмет для передачи в адаптер (listView student)
   private String groupName; // глобально група для передачи в studentInformation
-
   // adapters
   private ArrayAdapter<Integer> semesterSpinnerAdapter;
   private ArrayAdapter<Student> listViewAdapter;
@@ -174,7 +171,8 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
       }
 
       @Override
-      public void onNothingSelected(AdapterView<?> parent) { }
+      public void onNothingSelected(AdapterView<?> parent) {
+      }
     });
   }
 
@@ -183,16 +181,6 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   public void onBackPressed() {
     super.onBackPressed();
   }
-
-//    @Override
-//    public void onTeacherInfoForGroups(List<CourseForGroups> studentGroupList) {
-//        runOnUiThread(() -> {
-////            GroupSpinnerAdapter groupSpinnerAdapter = new GroupSpinnerAdapter(this,
-////                    studentGroupList);
-////            groupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-////            listGroupSpinner.setAdapter(groupSpinnerAdapter);
-//        });
-//    }
 
   // информация по групе
   @Override
@@ -206,7 +194,7 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   @Override
   public void onStudentsGroupList(List<Student> studentList) {
     runOnUiThread(() -> {
-      if(studentList != null) {
+      if (studentList != null) {
         listViewAdapter = new StudentAdapter(this,
                 R.layout.list_item_student,
                 studentList,
@@ -222,7 +210,7 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   @Override
   public void onCourseByTeacherEmail(List<CourseForGroup> courseForGroups) {
     runOnUiThread(() -> {
-      if(courseForGroups != null) {
+      if (courseForGroups != null) {
         subjectSpinnerAdapter = new SubjectSpinnerAdapter(this, courseForGroups);
         subjectSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         subjectSpinner.setAdapter(subjectSpinnerAdapter);
@@ -234,7 +222,7 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   @Override
   public void onGroupsByTeacherEmail(List<StudentGroupSmall> studentGroupSmall) {
     runOnUiThread(() -> {
-      if(studentGroupSmall != null) {
+      if (studentGroupSmall != null) {
         studentGroupSpinnerAdapter = new StudentGroupSpinnerAdapter(this, studentGroupSmall);
         studentGroupSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         listGroupSpinner.setAdapter(studentGroupSpinnerAdapter);
