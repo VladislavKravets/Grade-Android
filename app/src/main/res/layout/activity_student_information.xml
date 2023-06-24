@@ -43,14 +43,37 @@
             app:layout_constraintEnd_toEndOf="@+id/student_text_view"
             app:layout_constraintStart_toStartOf="@+id/student_text_view"
             app:layout_constraintTop_toBottomOf="@+id/student_text_view" />
+
+        <Button
+            android:id="@+id/addDataButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Додати оцінку"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateInput" />
+
+        <Button
+            android:id="@+id/absenceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Відмітити відсутність"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dateInput" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="wrap_content"
-        android:layout_height="600dp"
+        android:layout_height="400dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

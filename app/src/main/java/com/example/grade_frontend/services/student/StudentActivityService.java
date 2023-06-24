@@ -62,7 +62,7 @@ public class StudentActivityService {
 
   public void getCourseByStudentEmailAndCourseSemester(String email, int semester,
                                             StudentActivityServiceCallback callback) {
-    String url = BASE_URL + API_STUDENT + "getByStudentEmailAndCourseSemester"
+    String url = BASE_URL + API_STUDENT + "getCoursesByEmailAndSemester"
             + "?email=" + email
             + "&semester=" + semester;
     makeRequest(url, callback, GetNameQueries.COURSE_FOR_STUDENT);

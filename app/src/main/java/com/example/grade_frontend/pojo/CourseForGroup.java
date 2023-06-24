@@ -17,7 +17,7 @@ import lombok.Setter;
 public class CourseForGroup implements Serializable {
   @SerializedName("courseCourseNameId")
   @Expose
-  private int courseCourseNameId;
+  private int courseNameId;
   @SerializedName("courseCourseNameName")
   @Expose
   private String courseName;

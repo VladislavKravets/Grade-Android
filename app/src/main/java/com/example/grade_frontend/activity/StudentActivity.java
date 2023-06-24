@@ -262,6 +262,21 @@ public class StudentActivity extends AppCompatActivity implements StudentInforma
     });
   }
 
+  @Override
+  public void onPOSTStudentForGrade() {
+
+  }
+
+  @Override
+  public void onPOSTStudentForAbsence() {
+
+  }
+
+  @Override
+  public void onStudentForAbsenceForDate(boolean active) {
+
+  }
+
   // получение предметов студента
   @Override
   public void onCourseForStudentEmail(List<String> courses) {

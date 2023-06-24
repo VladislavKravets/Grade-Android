@@ -43,6 +43,8 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
   private int semester; // глобально инициализируем семестр
   private String courseName; // глобально предмет для передачи в адаптер (listView student)
   private String groupName; // глобально група для передачи в studentInformation
+
+  private int courseId; // глобально выбраный id пользователя
   // adapters
   private ArrayAdapter<Integer> semesterSpinnerAdapter;
   private ArrayAdapter<Student> listViewAdapter;
@@ -161,12 +163,13 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
 
         CourseForGroup courseForGroup = (CourseForGroup) parent.getItemAtPosition(position);
         courseName = courseForGroup.getCourseName();
+        courseId = courseForGroup.getCourseNameId();
 
         TeacherActivityService teacherService = new TeacherActivityService(); // работа с беком
         teacherService.getGroupByEmailSemesterAndIdNameCourse(
                 mAuth.getCurrentUser().getEmail(),
                 semester,
-                courseForGroup.getCourseCourseNameId(),
+                courseForGroup.getCourseNameId(),
                 TeacherActivity.this);
       }
 
@@ -199,7 +202,9 @@ public class TeacherActivity extends AppCompatActivity implements TeacherActivit
                 R.layout.list_item_student,
                 studentList,
                 courseName,
-                groupName
+                groupName,
+                courseId,
+                semester
         );
         listView.setAdapter(listViewAdapter);
       }

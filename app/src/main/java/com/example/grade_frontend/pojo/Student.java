@@ -15,6 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Student implements Serializable {
+    @SerializedName("id")
+    @Expose
+    private Long id;
+
     @SerializedName("name")
     @Expose
     private String name;
